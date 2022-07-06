@@ -21,7 +21,7 @@ let wrapper = (fn) =>
     (first) => (second) => fn(second, first);
 
 // let's give it an appropriate name
-const flipAndCurry = (fn) =>
+let flipAndCurry = (fn) =>
     (first) => (second) => fn(second, first);
 
 // now just flip
@@ -45,3 +45,26 @@ flip = (fn) =>
 
 // so if we write mapWith = flip(map) 
 // we can call mapWith(fn, list) or mapWith(fn)(list)
+
+// flip throws away the current context away, let's fix it
+flipAndCurry = (fn) =>
+    (first) =>
+        function (second) {
+            return fn.call(this, second, first);
+        }
+
+flip = (fn) =>
+    function (first, second) {
+        return fn.call(this, second, first);
+    }
+
+flip = (fn) =>
+    function (first, second) {
+        if (arguments.length === 2) {
+            return fn.call(this, second, first);
+        } else {
+            return function (second) {
+                return fn.call(this, second, first)
+            }
+        }
+    }

@@ -25,8 +25,23 @@ const flipAndCurry = (fn) =>
     (first) => (second) => fn(second, first);
 
 // now just flip
-const flip = (fn) =>
+let flip = (fn) =>
     (first, second) => fn(second, first);
 
 // we can define mapWith using flipAndCurry
 mapWith = flipAndCurry(map)
+
+// what if we want to have curried and non-curried variants of flip?
+flip = (fn) =>
+    function (first, second) {
+        if (arguments.length === 2) {
+            return fn(second, first);
+        } else {
+            return function (second) {
+                return fn(second, first);
+            }
+        }
+    }
+
+// so if we write mapWith = flip(map) 
+// we can call mapWith(fn, list) or mapWith(fn)(list)
